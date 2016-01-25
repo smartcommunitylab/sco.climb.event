@@ -17,16 +17,19 @@
 package it.smartcommunitylab.climb.eventstore.controller;
 
 import it.smartcommunitylab.climb.eventstore.common.Utils;
+import it.smartcommunitylab.climb.eventstore.exception.InvalidParametersException;
 import it.smartcommunitylab.climb.eventstore.exception.UnauthorizedException;
-import it.smartcommunitylab.climb.eventstore.security.DataSetInfo;
+import it.smartcommunitylab.climb.eventstore.model.wsnEvent;
 import it.smartcommunitylab.climb.eventstore.storage.DataSetSetup;
 import it.smartcommunitylab.climb.eventstore.storage.RepositoryManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +44,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.google.common.collect.Lists;
+
 
 @Controller
-public class AdminController {
-	private static final transient Logger logger = LoggerFactory.getLogger(AdminController.class);
+public class EventController {
+	private static final transient Logger logger = LoggerFactory.getLogger(EventController.class);
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 			
 	@Autowired
 	private RepositoryManager storage;
@@ -52,36 +58,49 @@ public class AdminController {
 	@Autowired
 	private DataSetSetup dataSetSetup;
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/ping")
-	public @ResponseBody
-	String ping(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-		return "PONG";
-	}
-
-	@RequestMapping(value = "/dataset/{ownerId}", method = RequestMethod.POST)
-	public @ResponseBody String updateDataSetInfo(@RequestBody DataSetInfo dataSetInfo, 
-			@PathVariable String ownerId, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		if(!Utils.validateAPIRequest(request, dataSetSetup, storage)) {
-			throw new UnauthorizedException("Unauthorized Exception: token not valid");
-		}
-		storage.saveAppToken(dataSetInfo.getOwnerId(), dataSetInfo.getToken());
-		storage.saveDataSetInfo(dataSetInfo);
-		dataSetSetup.init();
-		if(logger.isInfoEnabled()) {
-			logger.info("add dataSet");
-		}
-		return "OK";
-	}
-	
-	@RequestMapping(value = "/reload/{ownerId}", method = RequestMethod.GET)
-	public @ResponseBody String reload(@PathVariable String ownerId, 
+	@RequestMapping(value = "/api/event/{ownerId}", method = RequestMethod.GET)
+	public @ResponseBody List<wsnEvent> searchEvents(@PathVariable String ownerId, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		if(!Utils.validateAPIRequest(request, dataSetSetup, storage)) {
 			throw new UnauthorizedException("Unauthorized Exception: token not valid");
 		}
-		dataSetSetup.init();
+		List<wsnEvent> result = Lists.newArrayList();
+		String routeId = request.getParameter("routeId");
+		String[] eventTypeArray = request.getParameterValues("eventType[]");
+		String dateFromString = request.getParameter("dateFrom");
+		String dateToString = request.getParameter("dateTo");
+		try {
+			List<Integer> eventTypeList = Lists.newArrayList();
+			if(eventTypeArray != null) {
+				for(String eventTypeString : eventTypeArray) {
+					Integer eventType = Integer.valueOf(eventTypeString);
+					eventTypeList.add(eventType);
+				}
+			}
+			Date dateFrom = sdf.parse(dateFromString);
+			Date dateTo = sdf.parse(dateToString);
+			result = storage.searchEvents(ownerId, routeId, dateFrom, dateTo, eventTypeList);
+			if(logger.isInfoEnabled()) {
+				logger.info(String.format("searchEvents[%s]:%d", ownerId, result.size()));
+			}			
+		} catch (Exception e) {
+			throw new InvalidParametersException("Invalid query parameters:" + e.getMessage());
+		}
+		return result;
+	}
+	
+	@RequestMapping(value = "/api/event/{ownerId}", method = RequestMethod.POST)
+	public @ResponseBody String addEvents(@RequestBody List<wsnEvent> events, @PathVariable String ownerId, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		if(!Utils.validateAPIRequest(request, dataSetSetup, storage)) {
+			throw new UnauthorizedException("Unauthorized Exception: token not valid");
+		}
+		for(wsnEvent event : events) {
+			event.setOwnerId(ownerId);
+			storage.addEvent(event);
+		}
 		if(logger.isInfoEnabled()) {
-			logger.info("reload dataSet");
+			logger.info(String.format("addEvents[%s]:%d", ownerId, events.size()));
 		}
 		return "OK";
 	}
