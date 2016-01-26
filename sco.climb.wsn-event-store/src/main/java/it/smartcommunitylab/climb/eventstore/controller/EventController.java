@@ -50,7 +50,7 @@ import com.google.common.collect.Lists;
 @Controller
 public class EventController {
 	private static final transient Logger logger = LoggerFactory.getLogger(EventController.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 			
 	@Autowired
 	private RepositoryManager storage;
