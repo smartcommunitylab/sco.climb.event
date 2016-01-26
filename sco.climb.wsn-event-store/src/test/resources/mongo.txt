@@ -1,0 +1,7 @@
+db.getCollection('wsnEvent').createIndex( { eventType: 1 } )
+db.getCollection('wsnEvent').createIndex( { wsnNodeId: 1 } )
+db.getCollection('wsnEvent').createIndex( { timestamp: 1 } )
+
+db.getCollection('wsnEvent').find({"ownerId" : "TEST" , "routeId" : "ROUTE66" , "eventType" : { "$in" : [ 101 ]} , "wsnNodeId" : { "$in" : [ 1 ]} , 
+"$and" : [ { "timestamp" : { "$lte" : ISODate("2016-01-26T13:33:35.000Z")}} , { "timestamp" : { "$gte" : ISODate("2016-01-26T13:33:25.000Z")}}]})
+.sort({timestamp:1}).explain()

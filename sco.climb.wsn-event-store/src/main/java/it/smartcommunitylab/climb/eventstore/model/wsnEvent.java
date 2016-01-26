@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class wsnEvent extends BaseObject {
+public class WsnEvent extends BaseObject {
 	private String routeId;
 	private int wsnNodeId;
 	private int eventType;

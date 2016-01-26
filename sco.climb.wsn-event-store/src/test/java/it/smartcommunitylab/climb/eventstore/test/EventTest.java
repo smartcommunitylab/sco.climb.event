@@ -59,15 +59,28 @@ public class EventTest {
 	public void addEvents() throws Exception {
 		for(int i=0; i<1000; i++) {
 			List<WsnEvent> events = Lists.newArrayList();
+			boolean even = true;
+			boolean odd = true;
 			for(int j=0; j<1000; j++) {
 				WsnEvent event = new WsnEvent();
 				event.setOwnerId(ownerId);
 				event.setRouteId("ROUTE66");
-				event.setWsnNodeId(1);
 				if ( j % 2 == 0 ) {
 					event.setEventType(101);
+					if(even) {
+						event.setWsnNodeId(1);
+					} else {
+						event.setWsnNodeId(2);
+					}
+					even = !even;
 				} else {
 					event.setEventType(201);
+					if(odd) {
+						event.setWsnNodeId(2);
+					} else {
+						event.setWsnNodeId(1);
+					}
+					odd = !odd;
 				}
 				event.getPayload().put("state", new Integer(1));
 				event.setTimestamp(new Date());
