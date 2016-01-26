@@ -19,7 +19,7 @@ package it.smartcommunitylab.climb.eventstore.controller;
 import it.smartcommunitylab.climb.eventstore.common.Utils;
 import it.smartcommunitylab.climb.eventstore.exception.InvalidParametersException;
 import it.smartcommunitylab.climb.eventstore.exception.UnauthorizedException;
-import it.smartcommunitylab.climb.eventstore.model.wsnEvent;
+import it.smartcommunitylab.climb.eventstore.model.WsnEvent;
 import it.smartcommunitylab.climb.eventstore.storage.DataSetSetup;
 import it.smartcommunitylab.climb.eventstore.storage.RepositoryManager;
 
@@ -59,17 +59,18 @@ public class EventController {
 	private DataSetSetup dataSetSetup;
 	
 	@RequestMapping(value = "/api/event/{ownerId}", method = RequestMethod.GET)
-	public @ResponseBody List<wsnEvent> searchEvents(@PathVariable String ownerId, 
+	public @ResponseBody List<WsnEvent> searchEvents(@PathVariable String ownerId, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		if(!Utils.validateAPIRequest(request, dataSetSetup, storage)) {
 			throw new UnauthorizedException("Unauthorized Exception: token not valid");
 		}
-		List<wsnEvent> result = Lists.newArrayList();
+		List<WsnEvent> result = Lists.newArrayList();
 		String routeId = request.getParameter("routeId");
-		String[] eventTypeArray = request.getParameterValues("eventType[]");
 		String dateFromString = request.getParameter("dateFrom");
 		String dateToString = request.getParameter("dateTo");
-		try {
+		String[] eventTypeArray = request.getParameterValues("eventType[]");
+		String[] nodeIdArray = request.getParameterValues("nodeId[]");
+ 		try {
 			List<Integer> eventTypeList = Lists.newArrayList();
 			if(eventTypeArray != null) {
 				for(String eventTypeString : eventTypeArray) {
@@ -77,9 +78,16 @@ public class EventController {
 					eventTypeList.add(eventType);
 				}
 			}
+			List<Integer> nodeIdList = Lists.newArrayList();
+			if(nodeIdArray != null) {
+				for(String nodeIdString : nodeIdArray) {
+					Integer nodeId = Integer.valueOf(nodeIdString);
+					nodeIdList.add(nodeId);
+				}
+			}
 			Date dateFrom = sdf.parse(dateFromString);
 			Date dateTo = sdf.parse(dateToString);
-			result = storage.searchEvents(ownerId, routeId, dateFrom, dateTo, eventTypeList);
+			result = storage.searchEvents(ownerId, routeId, dateFrom, dateTo, eventTypeList, nodeIdList);
 			if(logger.isInfoEnabled()) {
 				logger.info(String.format("searchEvents[%s]:%d", ownerId, result.size()));
 			}			
@@ -90,12 +98,12 @@ public class EventController {
 	}
 	
 	@RequestMapping(value = "/api/event/{ownerId}", method = RequestMethod.POST)
-	public @ResponseBody String addEvents(@RequestBody List<wsnEvent> events, @PathVariable String ownerId, 
+	public @ResponseBody String addEvents(@RequestBody List<WsnEvent> events, @PathVariable String ownerId, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		if(!Utils.validateAPIRequest(request, dataSetSetup, storage)) {
 			throw new UnauthorizedException("Unauthorized Exception: token not valid");
 		}
-		for(wsnEvent event : events) {
+		for(WsnEvent event : events) {
 			event.setOwnerId(ownerId);
 			storage.addEvent(event);
 		}

@@ -1,6 +1,7 @@
 package it.smartcommunitylab.climb.eventstore.storage;
 
-import it.smartcommunitylab.climb.eventstore.model.wsnEvent;
+import it.smartcommunitylab.climb.eventstore.common.Utils;
+import it.smartcommunitylab.climb.eventstore.model.WsnEvent;
 import it.smartcommunitylab.climb.eventstore.security.DataSetInfo;
 import it.smartcommunitylab.climb.eventstore.security.Token;
 
@@ -70,7 +71,7 @@ public class RepositoryManager {
 		}
 	}
 	
-	public void addEvent(wsnEvent event) {
+	public void addEvent(WsnEvent event) {
 		Date actualDate = new Date();
 		event.setCreationDate(actualDate);
 		event.setLastUpdate(actualDate);
@@ -89,13 +90,20 @@ public class RepositoryManager {
 		if(logger.isDebugEnabled()) {
 			logger.debug("removeEvents:" + query.toString());
 		}
-		mongoTemplate.findAllAndRemove(query, wsnEvent.class);
+		mongoTemplate.findAllAndRemove(query, WsnEvent.class);
 	}
 	
-	public List<wsnEvent> searchEvents(String ownerId, String routeId, Date dateFrom, Date dateTo, List<Integer> eventTypeList) {
-		Criteria criteria = new Criteria("ownerId").is(ownerId).and("routeId").is(routeId);
+	public List<WsnEvent> searchEvents(String ownerId, String routeId, Date dateFrom, Date dateTo, 
+			List<Integer> eventTypeList, List<Integer> nodeIdList) {
+		Criteria criteria = new Criteria("ownerId").is(ownerId);
+		if(Utils.isNotEmpty(routeId)) {
+			criteria = criteria.and("routeId").is(routeId);
+		}
 		if(eventTypeList.size() > 0) {
 			criteria = criteria.and("eventType").in(eventTypeList);
+		}
+		if(nodeIdList.size() > 0) {
+			criteria = criteria.and("wsnNodeId").in(nodeIdList);
 		}
 		Query query = new Query(criteria);
 		query.addCriteria(new Criteria().andOperator(
@@ -105,7 +113,7 @@ public class RepositoryManager {
 		if(logger.isDebugEnabled()) {
 			logger.debug("searchEvents:" + query.toString());
 		}
-		List<wsnEvent> result = mongoTemplate.find(query, wsnEvent.class);
+		List<WsnEvent> result = mongoTemplate.find(query, WsnEvent.class);
 		if(logger.isDebugEnabled()) {
 			logger.debug("searchEvents:" + result.size());
 		}
