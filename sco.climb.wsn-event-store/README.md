@@ -8,15 +8,15 @@
 ```
 
 #### Header
-  - Content-Type = 'application/json'
-  - X-ACCESS-TOKEN = 'token'
+  - **Content-Type** = 'application/json'
+  - **X-ACCESS-TOKEN** = 'token'
 
 #### Params
-  - routeId: string, optional
-  - dateFrom: string, mandatory, "yyyy-MM-dd'T'HH:mm:ss"
-  - dateTo: string, mandatory, "yyyy-MM-dd'T'HH:mm:ss"
-  - eventType[]: string, mulitple value 
-  - nodeId[]: string, multiple value
+  - **routeId**: string, optional
+  - **dateFrom**: string, mandatory, "yyyy-MM-dd'T'HH:mm:ss"
+  - **dateTo**: string, mandatory, "yyyy-MM-dd'T'HH:mm:ss"
+  - **eventType[]**: string, mulitple value 
+  - **nodeId[]**: string, multiple value
 
 #### Result
     [
