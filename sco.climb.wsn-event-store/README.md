@@ -3,7 +3,7 @@
 ## REST API methods
 ----------
 ### Event Search 
-```sh
+```
   GET /api/event/{ownerId}
 ```
 
@@ -20,17 +20,17 @@
 
 #### Result
     [
-      {
-        "ownerId": "TEST",
-        "creationDate": 1453815205305,
-        "lastUpdate": 1453815205305,
-        "routeId": "ROUTE66",
-        "wsnNodeId": 1,
-        "eventType": 101,
-        "timestamp": 1453815205136,
-        "payload": {
-          "state": 1
-        }
-      },
-      {...}
+    {
+      "ownerId": "TEST",
+      "creationDate": 1453815205305,
+      "lastUpdate": 1453815205305,
+      "routeId": "ROUTE66",
+      "wsnNodeId": 1,
+      "eventType": 101,
+      "timestamp": 1453815205136,
+      "payload": {
+        "state": 1
+      }
+    },
+    {...}
     ]
