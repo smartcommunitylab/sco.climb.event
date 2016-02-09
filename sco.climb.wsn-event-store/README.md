@@ -37,7 +37,7 @@
 
 ### Add Event 
 ```
-  POS /api/event/{ownerId}
+  POST /api/event/{ownerId}
 ```
 
 #### Boby
