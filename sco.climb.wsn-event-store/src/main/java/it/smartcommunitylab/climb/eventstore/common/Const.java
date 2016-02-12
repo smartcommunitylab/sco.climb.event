@@ -10,6 +10,7 @@ public class Const {
 	public static final int NODE_AT_DESTINATION = 104;
 	public static final int NODE_OUT_OF_RANGE = 105;
 	public static final int ANCHOR_IN_RANGE = 201;
+	public static final int STOP_REACHED = 202;
 	public static final int SET_DRIVER = 301;
 	public static final int SET_HELPER = 302;
 	public static final int DRIVER_POSITION = 303;
