@@ -25,7 +25,7 @@
       "creationDate": 1453815205305,
       "lastUpdate": 1453815205305,
       "routeId": "ROUTE66",
-      "wsnNodeId": 1,
+      "wsnNodeId": "id1",
       "eventType": 101,
       "timestamp": 1453815205136,
       "payload": {
@@ -47,7 +47,7 @@
       "creationDate": 1453815205305,
       "lastUpdate": 1453815205305,
       "routeId": "ROUTE66",
-      "wsnNodeId": 1,
+      "wsnNodeId": "id1",
       "eventType": 101,
       "timestamp": 1453815205136,
       "payload": {
