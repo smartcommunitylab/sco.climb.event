@@ -110,7 +110,7 @@ public class EventController {
 		if(logger.isInfoEnabled()) {
 			logger.info(String.format("addEvents[%s]:%d", ownerId, events.size()));
 		}
-		return "{'status':'OK'}";
+		return "{\"status\":\"OK\"}";
 	}
 
 	@ExceptionHandler(Exception.class)
