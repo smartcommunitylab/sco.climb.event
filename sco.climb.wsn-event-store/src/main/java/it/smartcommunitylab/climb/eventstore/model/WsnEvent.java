@@ -6,15 +6,15 @@ import java.util.Map;
 
 public class WsnEvent extends BaseObject {
 	private String routeId;
-	private int wsnNodeId;
+	private String wsnNodeId;
 	private int eventType;
 	private Date timestamp;
 	private Map<String, Object> payload = new HashMap<String, Object>();
 	
-	public int getWsnNodeId() {
+	public String getWsnNodeId() {
 		return wsnNodeId;
 	}
-	public void setWsnNodeId(int wsnNodeId) {
+	public void setWsnNodeId(String wsnNodeId) {
 		this.wsnNodeId = wsnNodeId;
 	}
 	public int getEventType() {

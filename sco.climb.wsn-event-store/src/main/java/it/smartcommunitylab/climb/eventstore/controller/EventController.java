@@ -78,11 +78,10 @@ public class EventController {
 					eventTypeList.add(eventType);
 				}
 			}
-			List<Integer> nodeIdList = Lists.newArrayList();
+			List<String> nodeIdList = Lists.newArrayList();
 			if(nodeIdArray != null) {
 				for(String nodeIdString : nodeIdArray) {
-					Integer nodeId = Integer.valueOf(nodeIdString);
-					nodeIdList.add(nodeId);
+					nodeIdList.add(nodeIdString);
 				}
 			}
 			Date dateFrom = sdf.parse(dateFromString);

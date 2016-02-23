@@ -94,7 +94,7 @@ public class RepositoryManager {
 	}
 	
 	public List<WsnEvent> searchEvents(String ownerId, String routeId, Date dateFrom, Date dateTo, 
-			List<Integer> eventTypeList, List<Integer> nodeIdList) {
+			List<Integer> eventTypeList, List<String> nodeIdList) {
 		Criteria criteria = new Criteria("ownerId").is(ownerId);
 		if(Utils.isNotEmpty(routeId)) {
 			criteria = criteria.and("routeId").is(routeId);
