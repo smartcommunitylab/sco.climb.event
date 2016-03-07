@@ -68,17 +68,17 @@ public class EventTest {
 				if ( j % 2 == 0 ) {
 					event.setEventType(101);
 					if(even) {
-						event.setWsnNodeId(1);
+						event.setWsnNodeId("1");
 					} else {
-						event.setWsnNodeId(2);
+						event.setWsnNodeId("2");
 					}
 					even = !even;
 				} else {
 					event.setEventType(201);
 					if(odd) {
-						event.setWsnNodeId(2);
+						event.setWsnNodeId("2");
 					} else {
-						event.setWsnNodeId(1);
+						event.setWsnNodeId("1");
 					}
 					odd = !odd;
 				}
