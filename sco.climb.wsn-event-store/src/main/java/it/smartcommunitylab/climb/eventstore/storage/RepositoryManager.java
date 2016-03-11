@@ -42,6 +42,12 @@ public class RepositoryManager {
 		return result;
 	}
 	
+	public DataSetInfo getDataSetInfo(String ownerId) {
+		Query query = new Query(new Criteria("ownerId").is(ownerId));
+		DataSetInfo result = mongoTemplate.findOne(query, DataSetInfo.class);
+		return result;
+	}
+	
 	public void saveDataSetInfo(DataSetInfo dataSetInfo) {
 		Query query = new Query(new Criteria("ownerId").is(dataSetInfo.getOwnerId()));
 		DataSetInfo appInfoDB = mongoTemplate.findOne(query, DataSetInfo.class);
@@ -70,6 +76,8 @@ public class RepositoryManager {
 			mongoTemplate.updateFirst(query, update, Token.class);
 		}
 	}
+	
+	// EVENTS
 	
 	public void addEvent(WsnEvent event) {
 		Date actualDate = new Date();

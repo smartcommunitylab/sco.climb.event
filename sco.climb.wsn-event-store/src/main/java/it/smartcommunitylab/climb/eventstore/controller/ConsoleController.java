@@ -17,15 +17,20 @@
 package it.smartcommunitylab.climb.eventstore.controller;
 
 import it.smartcommunitylab.climb.eventstore.common.Utils;
+import it.smartcommunitylab.climb.eventstore.security.DataSetDetails;
+import it.smartcommunitylab.climb.eventstore.security.DataSetInfo;
+import it.smartcommunitylab.climb.eventstore.storage.DataSetSetup;
 import it.smartcommunitylab.climb.eventstore.storage.RepositoryManager;
 
 import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +48,9 @@ public class ConsoleController {
 	
 	@Autowired
 	private RepositoryManager storage;
+
+	@Autowired
+	private DataSetSetup dataSetSetup;
 	
 	@RequestMapping(value = "/")
 	public View root() {
@@ -62,6 +70,23 @@ public class ConsoleController {
 	@RequestMapping(value = "/console")
 	public String console() {
 		return "console";
+	}
+	
+	@RequestMapping(value = "/console/data")
+	public @ResponseBody DataSetInfo data(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		return storage.getDataSetInfo(getOwnerId());
+	}
+	
+	@RequestMapping(value = "/search-table")
+	public String searchTable() {
+		return "search-table";
+	}
+	
+	private String getOwnerId() {
+		DataSetDetails details = (DataSetDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String name = details.getUsername();
+		return name;
 	}
 
 	@ExceptionHandler(Exception.class)

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>CLIMB Console</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<script src="lib/jqueryui/external/jquery/jquery.js"></script>
+	<script src="lib/jqueryui/jquery-ui.min.js"></script>
+	<script src="lib/jqueryui/jquery-ui-datepicker-it.js"></script>
+	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-sanitize.min.js"></script>
+	<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="lib/spin.min.js"></script>
+	<script src="lib/moment.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="lib/jqueryui/jquery-ui.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="lib/images/CLIMB_icona.png" type="image/x-icon" />
+</head>
+<body data-ng-app="search-table" data-ng-controller="userCtrl">
+	<div data-ng-include="'html/navbar.html'"></div>
+
+	<div class="container-fluid" id="spin">
+
+		<div class="list-title">
+			<h4>Ricerca EVENTI</h4>
+		</div>
+
+			<div id="error" class="alert alert-danger fade in" data-ng-show="error">
+				<a href="#" class="close" data-hide="alert" aria-label="close"
+				data-ng-click="resetError()">&times;</a>
+				{{errorMsg}}
+			</div>
+
+			<div id="ok" class="alert alert-success fade in" data-ng-show="ok">
+				<a href="#" class="close" data-hide="alert" aria-label="close"
+				data-ng-click="resetOk()">&times;</a>
+				{{okMsg}}
+			</div>
+
+			<div id="divForm" class="" role="dialog">
+	     	<p class="text-danger pull-right">I campi contrassegnati con il simbolo
+	     	<span class="glyphicon glyphicon-asterisk"></span> sono obbligatori</p>
+				<form role="form">
+				  <div class="row form-group">
+				    <label class="col-md-1 control-label">Tipo Evento:</label>
+				    <div class="col-md-2">
+					    <select id="eventType" class="form-control" data-ng-model="fEventType"
+					    data-ng-options="item.value as item.name for item in eventTypeList">
+	     				</select>
+				    </div>
+				    <span class="text-danger glyphicon glyphicon-asterisk"></span>
+				  </div>
+					<div class="row form-group">
+						<label class="col-md-1 control-label">Corsa Pedibus:</label>
+						<div class="col-md-2">
+							<input class="form-control" type="text" name="routeId" data-ng-model="fRouteId"
+						  placeholder="routeId">						
+						</div>
+						<span class="text-danger glyphicon glyphicon-asterisk"></span>
+					</div>
+				</form>
+	  		<button class="btn btn-success" data-ng-click="searchItem()"
+	  			data-ng-disabled="incomplete">
+	  			<span class="glyphicon glyphicon-search"></span> Cerca
+	  		</button>
+			</div>
+
+		<hr>
+
+		<div class="row list-search">
+			<div class="col-md-2">
+				<span class="glyphicon glyphicon-eye-open"></span>
+				<label control-label">Filtra:</label>
+				<input type="text" data-ng-model="search">
+			</div>
+		</div>
+
+		<div class="row list-header">
+			<div class="col-md-3"><h4>Evento</h4></div>
+			<div class="col-md-2"><h4>Timestamp</h4></div>
+			<div class="col-md-2"><h4>WSN</h4></div>
+			<div class="col-md-3"><h4>Payload</h4></div>
+			<div class="col-md-2"><h4></h4></div>
+		</div>
+		<div class="row list-row" data-ng-repeat="item in events | filter:doSearch">
+			<div class="col-md-3">
+				<span>{{getEventName(item)}}</span>
+			</div>
+			<div class="col-md-2">
+				<span>{{getEventTimestamp(item)}}</span>
+			</div>
+			<div class="col-md-2">
+				<span>{{item.wsnNodeId}}</span>
+			</div>
+			<div class="col-md-3">
+				<span>{{item.payload}}</span>
+			</div>
+			<div class="col-md-2">
+				<button class="btn btn-primary" data-toggle="modal" data-target="#divDeleteItemAlert"
+				data-backdrop="static" data-ng-click="copyItem(item)" title="Copia">
+					<span class="glyphicon glyphicon-copy"></span>
+				</button>
+			</div>
+		</div>
+
+	</div>
+
+	<script src = "js/services.js"></script>
+	<script src = "js/search-table.js"></script>
+
+	<script type='text/javascript'>
+	var opts = {
+		  lines: 11 // The number of lines to draw
+		, length: 21 // The length of each line
+		, width: 11 // The line thickness
+		, radius: 41 // The radius of the inner circle
+		, scale: 1 // Scales overall size of the spinner
+		, corners: 1 // Corner roundness (0..1)
+		, color: '#000' // #rgb or #rrggbb or array of colors
+		, opacity: 0.25 // Opacity of the lines
+		, rotate: 0 // The rotation offset
+		, direction: 1 // 1: clockwise, -1: counterclockwise
+		, speed: 1.1 // Rounds per second
+		, trail: 50 // Afterglow percentage
+		, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+		, zIndex: 2e9 // The z-index (defaults to 2000000000)
+		, className: 'spinner' // The CSS class to assign to the spinner
+		, top: '50%' // Top position relative to parent
+		, left: '50%' // Left position relative to parent
+		, shadow: false // Whether to render a shadow
+		, hwaccel: false // Whether to use hardware acceleration
+		, position: 'absolute' // Element positioning
+		}
+	var spinTarget = document.getElementById('spin')
+	var spinner = new Spinner(opts);
+	</script>
+</body>
+</html>
