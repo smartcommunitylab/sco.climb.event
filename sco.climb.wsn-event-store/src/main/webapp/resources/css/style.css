@@ -1,3 +1,8 @@
+.google-map-container {
+    height: 750px;
+    width: 100%; 
+}
+
 .navbar-inverse {
 	background-color: #639B3D;
 	border-color: #639B3D;

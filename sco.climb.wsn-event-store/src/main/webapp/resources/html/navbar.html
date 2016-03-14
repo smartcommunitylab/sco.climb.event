@@ -15,8 +15,11 @@
 					<a class="dropdown-toggle"
 					data-toggle="dropdown" href="#">Ricerca <span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li id="menu-tipo-utenza" data-ng-class="{'active':selectedTab == 'menu-search-table'}"
+						<li id="menu-search-table" data-ng-class="{'active':selectedTab == 'menu-search-table'}"
 							data-ng-click="selectedTab = 'menu-search-table'"><a href="search-table">Tabella</a>
+						</li>
+						<li id="menu-search-map" data-ng-class="{'active':selectedTab == 'menu-search-map'}"
+							data-ng-click="selectedTab = 'menu-search-map'"><a href="search-map">Mappa</a>
 						</li>
 					</ul>
 				</li>

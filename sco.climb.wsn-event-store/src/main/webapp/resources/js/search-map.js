@@ -12,7 +12,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	});
 
 	$scope.selectedMenu = "ricerca";
-	$scope.selectedTab = "menu-search-table";
+	$scope.selectedTab = "menu-search-map";
 	$scope.language = "it";
 	$scope.defaultLang = "it";
 	$scope.itemToDelete = "";
@@ -32,7 +32,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	$scope.data = null;
 	$scope.status = 200;
 	
-	$scope.fEventType = -1;
+	$scope.fEventType = 303;
 	$scope.fCopyText = "";
 	$scope.fDateFrom = "2016-03-11";
 	$scope.fDateTo = "2016-03-11";
@@ -44,63 +44,22 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	$scope.schoolList = null;
 	$scope.selectedSchool = null;
 	$scope.selectedRoute = null;
+	
+	$scope.mapOption = {
+		disableDoubleClickZoom: true,
+		scrollwheel: false,
+		streetViewControl: false,
+		mapTypeControlOptions: {
+			style:google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+			position: google.maps.ControlPosition.LEFT_TOP
+		},
+    zoom: 13,
+    center: new google.maps.LatLng(46.073058, 11.120620),
+    mapTypeId: google.maps.MapTypeId.ROADMAP // ROADMAP | SATELLITE | HYBRID | TERRAIN
+	};
 
 	$scope.initData = function(profile) {
 		$scope.profile = profile;
-		$scope.eventTypeList = [
-		 {
-			 'name' : 'TUTTI',
-			 'value' : -1
-		 },
-		 {
-			 	'name' : 'NODE_IN_RANGE',
-     		'value' : 101
-     	},
-     	{
-     		'name' : 'NODE_CHECKIN',
-     		'value' : 102
-     	},
-     	{
-     		'name' : 'NODE_CHECKOUT',
-     		'value' : 103
-     	},
-     	{
-     		'name' : 'NODE_AT_DESTINATION',
-     		'value' : 104
-     	},
-     	{
-     		'name' : 'NODE_OUT_OF_RANGE',
-     		'value' : 105
-     	},
- 		 {
- 			 'name' : 'ANCHOR_IN_RANGE',
- 			 'value' : 201
- 		 },
-		 {
-			 'name' : 'STOP_REACHED',
-			 'value' : 202
-		 },
-		 {
-			 'name' : 'SET_DRIVER',
-			 'value' : 301
-		 },
-		 {
-			 'name' : 'SET_HELPER',
-			 'value' : 302
-		 },
-		 {
-			 'name' : 'DRIVER_POSITION',
-			 'value' : 303
-		 },
-		 {
-			 'name' : 'START_ROUTE',
-			 'value' : 401
-		 },
-		 {
-			 'name' : 'END_ROUTE',
-			 'value' : 402
-		 }
-		];
 
 		var urlSchoolList = "https://climbdev.smartcommunitylab.it/context-store/" + 
 		"api/school/" + $scope.profile.ownerId;
@@ -381,4 +340,82 @@ searchTableApp.directive('datepicker', function() {
       });
     }
   }
+});
+
+searchTableApp.directive('myMap', function() {
+  // directive link function
+  var link = function($scope, element, attrs) {
+      var map, infoWindow;
+      var markers = [];
+      
+      // map config
+      var mapOptions = {
+      		disableDoubleClickZoom: true,
+      		scrollwheel: false,
+      		streetViewControl: false,
+      		mapTypeControlOptions: {
+      			style:google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+      			position: google.maps.ControlPosition.LEFT_TOP
+      		},
+          zoom: 13,
+          center: new google.maps.LatLng(46.073058, 11.120620),
+          mapTypeId: google.maps.MapTypeId.ROADMAP // ROADMAP | SATELLITE | HYBRID | TERRAIN
+      };
+      
+      // init the map
+      function initMap() {
+          if (map === void 0) {
+              map = new google.maps.Map(element[0], mapOptions);
+          }
+      }    
+      
+      // place a marker
+      function setMarker(map, position, title, content) {
+          var marker;
+          var markerOptions = {
+              position: position,
+              map: map,
+              title: title,
+              icon: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
+          };
+
+          marker = new google.maps.Marker(markerOptions);
+          markers.push(marker); // add marker to array
+          
+          google.maps.event.addListener(marker, 'click', function () {
+              // close window if not undefined
+              if (infoWindow !== void 0) {
+                  infoWindow.close();
+              }
+              // create new window
+              var infoWindowOptions = {
+                  content: content
+              };
+              infoWindow = new google.maps.InfoWindow(infoWindowOptions);
+              infoWindow.open(map, marker);
+          });
+      }
+      
+      // show the map and place some markers
+      initMap();
+      
+      $scope.$watch('events', function(newVal, oldVal) {
+        if($scope.events) {
+        	for (var d = 0, len = $scope.events.length; d < len; d += 1) {
+        		var item = $scope.events[d];
+        		var latitude = item.payload.latitude;
+        		var longitude = item.payload.longitude;
+        		var title = item.payload.volunteerId;
+        		setMarker(map, new google.maps.LatLng(latitude, longitude), title, 'Just some content');
+        	}
+        }
+      });
+  };
+  
+  return {
+      restrict: 'A',
+      template: '<div id="gmaps"></div>',
+      replace: true,
+      link: link
+  };	
 });

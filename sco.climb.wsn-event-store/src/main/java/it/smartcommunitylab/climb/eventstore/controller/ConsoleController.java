@@ -83,6 +83,11 @@ public class ConsoleController {
 		return "search-table";
 	}
 	
+	@RequestMapping(value = "/search-map")
+	public String searchMap() {
+		return "search-map";
+	}
+	
 	private String getOwnerId() {
 		DataSetDetails details = (DataSetDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String name = details.getUsername();
