@@ -1,4 +1,4 @@
-var searchTableApp = angular.module('search-table', ['DataService']);
+var searchTableApp = angular.module('search-table', ['DataService', 'ngclipboard']);
 
 var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $http, $window, DataService) {
 	DataService.getProfile().then(
@@ -33,9 +33,17 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	$scope.status = 200;
 	
 	$scope.fEventType = -1;
-	$scope.fRouteId = "5187f1cf-a6f0-4e4a-a025-cb2fe52a1061";
+	$scope.fCopyText = "";
+	$scope.fDateFrom = "2016-03-11";
+	$scope.fDateTo = "2016-03-11";
+	$scope.fHourFrom = "10:00:00";
+	$scope.fHourTo = "11:00:00";
 	$scope.eventTypeList = [];
 	$scope.events = null;
+	$scope.routeList = null;
+	$scope.schoolList = null;
+	$scope.selectedSchool = null;
+	$scope.selectedRoute = null;
 
 	$scope.initData = function(profile) {
 		$scope.profile = profile;
@@ -93,7 +101,34 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 			 'value' : 402
 		 }
 		];
+
+		var urlSchoolList = "https://climbdev.smartcommunitylab.it/context-store/" + 
+		"api/school/" + $scope.profile.ownerId;
+		$http.get(urlSchoolList, {headers: {'X-ACCESS-TOKEN': $scope.profile.token}}).then(
+		function (response) {
+			$scope.schoolList = response.data;
+		},
+		function(response) {
+			console.log(response.data);
+			$scope.error = true;
+			$scope.errorMsg = response.data.errorMsg;
+		});
+		
 	};
+	
+	$scope.changeSchool = function() {
+		var urlRouteList = "https://climbdev.smartcommunitylab.it/context-store/" + 
+		"api/route/" + $scope.profile.ownerId + "/school/" + $scope.selectedSchool.objectId;
+		$http.get(urlRouteList, {headers: {'X-ACCESS-TOKEN': $scope.profile.token}}).then(
+		function (response) {
+			$scope.routeList = response.data;
+		},
+		function(response) {
+			console.log(response.data);
+			$scope.error = true;
+			$scope.errorMsg = response.data.errorMsg;
+		});
+	}
 	
 	$scope.doSearch = function(item) {
 		var q = $scope.search.toLowerCase();
@@ -184,15 +219,29 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 
 	$scope.resetForm = function() {
 		$sopne.fEventType = -1;
-		$scope.fRouteId = "";
+		$scope.fCopyText = "";
+		$scope.fDateFrom = "";
+		$scope.fDateTo = "";
+		$scope.fHourFrom = "";
+		$scope.fHourTo = "";
+		$scope.selectedSchool = null;
+		$scope.selectedRoute = null;
 	};
 
 	$scope.searchItem = function() {
 		$window.spinner.spin($window.spinTarget);
-		var dateFrom = "2016-03-11T09:00:00";
-		var dateTo = "2016-03-11T12:00:00";
+		//var dateFrom = "2016-03-11T09:00:00";
+		//var dateTo = "2016-03-11T12:00:00";
+		var dateFrom = $scope.fDateFrom;
+		if($scope.fHourFrom) {
+			dateFrom = dateFrom + "T" + $scope.fHourFrom; 
+		}
+		var dateTo = $scope.fDateTo;
+		if($scope.fHourTo) {
+			dateTo = dateTo + "T" + $scope.fHourTo;
+		}
 		
-		var urlSearch = "api/event/" + $scope.profile.ownerId + "?routeId=" + $scope.fRouteId
+		var urlSearch = "api/event/" + $scope.profile.ownerId + "?routeId=" + $scope.selectedRoute.objectId
 		+ "&dateFrom=" + dateFrom + "&dateTo=" + dateTo;
 		
 		if($scope.fEventType > 0) {
@@ -263,15 +312,19 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	};
 	
 	$scope.copyItem = function(item) {
-		text = JSON.stringify(item);
-		
+		return JSON.stringify(item);
 	};
 
-	$scope.$watch('fRouteId',function() {$scope.test();}, true);
+	$scope.$watch('selectedSchool',function() {$scope.test();}, true);
+	$scope.$watch('selectedRoute',function() {$scope.test();}, true);
+	$scope.$watch('fDateFrom',function() {$scope.test();}, true);
+	$scope.$watch('fDateTo',function() {$scope.test();}, true);
 
 	$scope.test = function() {
-		if(($scope.fRouteId == null) ||
-		($scope.fRouteId.length < 3)) {
+		if(($scope.selectedSchool == null) ||
+		($scope.selectedRoute == null) ||		
+		(!$scope.fDateFrom) || 
+		(!$scope.fDateTo)) {
 			$scope.incomplete = true;
 		} else {
 			$scope.incomplete = false;
@@ -296,4 +349,30 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 		return -1;
 	};
 
+});
+
+searchTableApp.directive('datepicker', function() {
+  return {
+    restrict: 'A',
+    require : 'ngModel',
+    link : function (scope, element, attrs, ngModelCtrl) {
+    	$(function(){
+    		element.datepicker("option", $.datepicker.regional['it']);
+    		element.datepicker({
+    			showOn: attrs['showon'],
+          buttonImage: "lib/jqueryui/images/ic_calendar.png",
+          buttonImageOnly: false,
+          buttonText: "Calendario",
+          dateFormat: attrs['dateformat'],
+          minDate: "-1Y",
+          maxDate: "+2Y",
+          onSelect:function (date) {
+          	scope.$apply(function () {
+          		ngModelCtrl.$setViewValue(date);
+            });
+          }
+        });
+      });
+    }
+  }
 });
