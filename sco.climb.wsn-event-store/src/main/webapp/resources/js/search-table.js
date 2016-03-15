@@ -34,10 +34,10 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	
 	$scope.fEventType = -1;
 	$scope.fCopyText = "";
-	$scope.fDateFrom = "2016-03-11";
-	$scope.fDateTo = "2016-03-11";
-	$scope.fHourFrom = "10:00:00";
-	$scope.fHourTo = "11:00:00";
+	$scope.fDateFrom = "2016-03-14";
+	$scope.fDateTo = "2016-03-14";
+	$scope.fHourFrom = "07:30:00";
+	$scope.fHourTo = "08:30:00";
 	$scope.eventTypeList = [];
 	$scope.events = null;
 	$scope.routeList = null;
@@ -47,6 +47,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 
 	$scope.initData = function(profile) {
 		$scope.profile = profile;
+		$scope.baseUrl = "https://climb.smartcommunitylab.it/";
 		$scope.eventTypeList = [
 		 {
 			 'name' : 'TUTTI',
@@ -102,8 +103,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 		 }
 		];
 
-		var urlSchoolList = "https://climbdev.smartcommunitylab.it/context-store/" + 
-		"api/school/" + $scope.profile.ownerId;
+		var urlSchoolList = $scope.baseUrl + "context-store/" + "api/school/" + $scope.profile.ownerId;
 		$http.get(urlSchoolList, {headers: {'X-ACCESS-TOKEN': $scope.profile.token}}).then(
 		function (response) {
 			$scope.schoolList = response.data;
@@ -117,8 +117,8 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	};
 	
 	$scope.changeSchool = function() {
-		var urlRouteList = "https://climbdev.smartcommunitylab.it/context-store/" + 
-		"api/route/" + $scope.profile.ownerId + "/school/" + $scope.selectedSchool.objectId;
+		var urlRouteList = $scope.baseUrl + "context-store/" + "api/route/" + $scope.profile.ownerId 
+		+ "/school/" + $scope.selectedSchool.objectId;
 		$http.get(urlRouteList, {headers: {'X-ACCESS-TOKEN': $scope.profile.token}}).then(
 		function (response) {
 			$scope.routeList = response.data;
@@ -241,7 +241,8 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 			dateTo = dateTo + "T" + $scope.fHourTo;
 		}
 		
-		var urlSearch = "api/event/" + $scope.profile.ownerId + "?routeId=" + $scope.selectedRoute.objectId
+		var urlSearch = $scope.baseUrl + "wsn-event-store/api/event/" + $scope.profile.ownerId 
+		+ "?routeId=" + $scope.selectedRoute.objectId
 		+ "&dateFrom=" + dateFrom + "&dateTo=" + dateTo;
 		
 		if($scope.fEventType > 0) {
@@ -316,6 +317,14 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 		var result = day.format('DD/MM/YYYY, hh:mm:ss'); 
 		return result;
 	};
+	
+	$scope.getResponseSize = function() {
+		if($scope.events) {
+			return $scope.events.length;
+		} else {
+			return "";
+		}
+	}
 	
 	$scope.copyItem = function(item) {
 		return JSON.stringify(item);
