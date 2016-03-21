@@ -58,6 +58,11 @@ public class EventController {
 	@Autowired
 	private DataSetSetup dataSetSetup;
 	
+	@RequestMapping(value = "/report/context/url", method = RequestMethod.GET)
+	public @ResponseBody String getContextApiUrl() {
+		return "{\"url\":\"" + storage.getContextApiUrl() + "\"}";
+	}
+	
 	@RequestMapping(value = "/api/event/{ownerId}", method = RequestMethod.GET)
 	public @ResponseBody List<WsnEvent> searchEvents(@PathVariable String ownerId, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception {

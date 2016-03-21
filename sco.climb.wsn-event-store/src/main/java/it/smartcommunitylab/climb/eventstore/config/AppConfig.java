@@ -52,6 +52,10 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 	@Autowired
 	@Value("${defaultLang}")
 	private String defaultLang;
+	
+	@Autowired
+	@Value("${context.api.url}")
+	private String contextApiUrl;
 
 	public AppConfig() {
 	}
@@ -63,7 +67,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
 	@Bean
 	RepositoryManager getRepositoryManager() throws UnknownHostException, MongoException {
-		return new RepositoryManager(getMongo(), defaultLang);
+		return new RepositoryManager(getMongo(), defaultLang, contextApiUrl);
 	}
 
 	@Bean

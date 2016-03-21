@@ -21,14 +21,20 @@ public class RepositoryManager {
 	
 	private MongoTemplate mongoTemplate;
 	private String defaultLang;
+	private String contextApiUrl;
 	
-	public RepositoryManager(MongoTemplate template, String defaultLang) {
+	public RepositoryManager(MongoTemplate template, String defaultLang, String contextApiUrl) {
 		this.mongoTemplate = template;
 		this.defaultLang = defaultLang;
+		this.contextApiUrl = contextApiUrl;
 	}
 	
 	public String getDefaultLang() {
 		return defaultLang;
+	}
+	
+	public String getContextApiUrl() {
+		return contextApiUrl;
 	}
 
 	public Token findTokenByToken(String token) {

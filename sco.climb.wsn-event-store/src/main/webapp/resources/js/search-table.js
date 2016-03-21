@@ -47,7 +47,6 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 
 	$scope.initData = function(profile) {
 		$scope.profile = profile;
-		$scope.baseUrl = "https://climb.smartcommunitylab.it/";
 		$scope.eventTypeList = [
 		 {
 			 'name' : 'TUTTI',
@@ -102,22 +101,32 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 			 'value' : 402
 		 }
 		];
-
-		var urlSchoolList = $scope.baseUrl + "context-store/" + "api/school/" + $scope.profile.ownerId;
-		$http.get(urlSchoolList, {headers: {'X-ACCESS-TOKEN': $scope.profile.token}}).then(
-		function (response) {
-			$scope.schoolList = response.data;
-		},
-		function(response) {
-			console.log(response.data);
-			$scope.error = true;
-			$scope.errorMsg = response.data.errorMsg;
-		});
 		
+		var urlContext = "report/context/url";
+		$http.get(urlContext).then(
+				function (response) {
+					$scope.contextApiUrl = response.data.url;
+					var urlSchoolList = $scope.contextApiUrl + "school/" + $scope.profile.ownerId;
+					$http.get(urlSchoolList, {headers: {'X-ACCESS-TOKEN': $scope.profile.token}}).then(
+					function (response) {
+						$scope.schoolList = response.data;
+					},
+					function(response) {
+						console.log(response.data);
+						$scope.error = true;
+						$scope.errorMsg = response.data.errorMsg;
+					});
+				},
+				function(response) {
+					console.log(response.data);
+					$scope.error = true;
+					$scope.errorMsg = response.data;
+				}
+			);
 	};
 	
 	$scope.changeSchool = function() {
-		var urlRouteList = $scope.baseUrl + "context-store/" + "api/route/" + $scope.profile.ownerId 
+		var urlRouteList = $scope.contextApiUrl + "route/" + $scope.profile.ownerId 
 		+ "/school/" + $scope.selectedSchool.objectId;
 		$http.get(urlRouteList, {headers: {'X-ACCESS-TOKEN': $scope.profile.token}}).then(
 		function (response) {
@@ -241,7 +250,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 			dateTo = dateTo + "T" + $scope.fHourTo;
 		}
 		
-		var urlSearch = $scope.baseUrl + "wsn-event-store/api/event/" + $scope.profile.ownerId 
+		var urlSearch = "api/event/" + $scope.profile.ownerId 
 		+ "?routeId=" + $scope.selectedRoute.objectId
 		+ "&dateFrom=" + dateFrom + "&dateTo=" + dateTo;
 		
