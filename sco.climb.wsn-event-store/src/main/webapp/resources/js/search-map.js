@@ -342,10 +342,12 @@ searchTableApp.directive('myMap', function() {
       		disableDoubleClickZoom: true,
       		scrollwheel: false,
       		streetViewControl: false,
+      		rotateControl: false,
       		mapTypeControlOptions: {
       			style:google.maps.MapTypeControlStyle.DROPDOWN_MENU,
       			position: google.maps.ControlPosition.LEFT_TOP
       		},
+      		tilt: 0,
           zoom: 15,
           center: new google.maps.LatLng(46.122666, 11.116963),
           mapTypeId: google.maps.MapTypeId.ROADMAP // ROADMAP | SATELLITE | HYBRID | TERRAIN
