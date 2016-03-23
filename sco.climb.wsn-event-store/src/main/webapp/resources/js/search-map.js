@@ -48,18 +48,28 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	
 	$scope.initData = function(profile) {
 		$scope.profile = profile;
-		$scope.baseUrl = "https://climb.smartcommunitylab.it/";
 		
-		var urlSchoolList = $scope.baseUrl + "context-store/" +	"api/school/" + $scope.profile.ownerId;
-		$http.get(urlSchoolList, {headers: {'X-ACCESS-TOKEN': $scope.profile.token}}).then(
-		function (response) {
-			$scope.schoolList = response.data;
-		},
-		function(response) {
-			console.log(response.data);
-			$scope.error = true;
-			$scope.errorMsg = response.data.errorMsg;
-		});
+		var urlContext = "report/context/url";
+		$http.get(urlContext).then(
+				function (response) {
+					$scope.contextApiUrl = response.data.url;
+					var urlSchoolList = $scope.contextApiUrl + "school/" + $scope.profile.ownerId;
+					$http.get(urlSchoolList, {headers: {'X-ACCESS-TOKEN': $scope.profile.token}}).then(
+					function (response) {
+						$scope.schoolList = response.data;
+					},
+					function(response) {
+						console.log(response.data);
+						$scope.error = true;
+						$scope.errorMsg = response.data.errorMsg;
+					});
+				},
+				function(response) {
+					console.log(response.data);
+					$scope.error = true;
+					$scope.errorMsg = response.data;
+				}
+			);
 		
 	};
 	
