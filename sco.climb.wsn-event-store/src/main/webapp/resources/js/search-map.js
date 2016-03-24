@@ -198,7 +198,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 			dateTo = dateTo + "T" + $scope.fHourTo;
 		}
 		
-		var urlSearch = $scope.baseUrl + "wsn-event-store/api/event/" + $scope.profile.ownerId 
+		var urlSearch = "api/event/" + $scope.profile.ownerId 
 		+ "?routeId=" + $scope.selectedRoute.objectId
 		+ "&dateFrom=" + dateFrom + "&dateTo=" + dateTo;
 		
