@@ -74,7 +74,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	};
 	
 	$scope.changeSchool = function() {
-		var urlRouteList = $scope.baseUrl + "context-store/" + "api/route/" + $scope.profile.ownerId 
+		var urlRouteList = $scope.contextApiUrl +  "route/" + $scope.profile.ownerId 
 		+ "/school/" + $scope.selectedSchool.objectId;
 		$http.get(urlRouteList, {headers: {'X-ACCESS-TOKEN': $scope.profile.token}}).then(
 		function (response) {
