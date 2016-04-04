@@ -56,3 +56,12 @@
     },
     {...}
     ]
+    
+### Upload Logs
+```
+  POST /api/log/upload/{ownerId}
+```
+
+#### Params
+  - **name**: filename - string, mandatory
+  - **file**: file, mandatory
