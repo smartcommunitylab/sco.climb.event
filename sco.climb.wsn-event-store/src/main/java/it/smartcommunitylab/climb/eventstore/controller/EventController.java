@@ -23,6 +23,9 @@ import it.smartcommunitylab.climb.eventstore.model.WsnEvent;
 import it.smartcommunitylab.climb.eventstore.storage.DataSetSetup;
 import it.smartcommunitylab.climb.eventstore.storage.RepositoryManager;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -34,15 +37,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.common.collect.Lists;
 
@@ -51,6 +58,10 @@ import com.google.common.collect.Lists;
 public class EventController {
 	private static final transient Logger logger = LoggerFactory.getLogger(EventController.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	
+	@Autowired
+	@Value("${log.upload.dir}")
+	private String logUploadDir;
 			
 	@Autowired
 	private RepositoryManager storage;
@@ -113,6 +124,22 @@ public class EventController {
 		}
 		if(logger.isInfoEnabled()) {
 			logger.info(String.format("addEvents[%s]:%d", ownerId, events.size()));
+		}
+		return "{\"status\":\"OK\"}";
+	}
+
+	@RequestMapping(value = "/api/log/upload/{ownerId}", method = RequestMethod.POST)
+	public @ResponseBody String uploadLog(@RequestParam("file") MultipartFile file,
+			@RequestParam("name") String name, @PathVariable String ownerId,
+			HttpServletRequest request) throws Exception {
+		if(!Utils.validateAPIRequest(request, dataSetSetup, storage)) {
+			throw new UnauthorizedException("Unauthorized Exception: token not valid");
+		}
+		if (!file.isEmpty()) {
+			BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(
+					new File(logUploadDir + "/" + name)));
+			FileCopyUtils.copy(file.getInputStream(), stream);
+			stream.close();
 		}
 		return "{\"status\":\"OK\"}";
 	}
