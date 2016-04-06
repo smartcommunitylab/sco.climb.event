@@ -329,6 +329,14 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 		return result;
 	};
 	
+	$scope.getResponseSize = function() {
+		if($scope.events) {
+			return $scope.events.length;
+		} else {
+			return "";
+		}
+	}
+	
 	$scope.copyItem = function(item) {
 		return JSON.stringify(item);
 	};
@@ -460,8 +468,8 @@ searchTableApp.directive('myMap', function() {
         		var item = $scope.events[d];
         		var latitude = item.payload.latitude;
         		var longitude = item.payload.longitude;
-        		var title = $scope.getEventTimestamp(item);
-        		setMarker(map, new google.maps.LatLng(latitude, longitude), title, 'Just some content');
+        		var title = $scope.getEventName(item) + " - " + $scope.getEventTimestamp(item);
+        		setMarker(map, new google.maps.LatLng(latitude, longitude), title, title);
         	}
         }
       });
