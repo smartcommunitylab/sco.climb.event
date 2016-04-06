@@ -464,6 +464,7 @@ searchTableApp.directive('myMap', function() {
       
       $scope.$watch('events', function(newVal, oldVal) {
         if($scope.events) {
+        	markers = [];
         	for (var d = 0, len = $scope.events.length; d < len; d += 1) {
         		var item = $scope.events[d];
         		var latitude = item.payload.latitude;
