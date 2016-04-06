@@ -67,6 +67,15 @@
 				    </div>
 				    <span class="text-danger glyphicon glyphicon-asterisk"></span>
 				  </div>
+				  <div class="row form-group">
+				    <label class="col-md-1 control-label">Tipo Evento:</label>
+				    <div class="col-md-2">
+					    <select id="eventType" class="form-control" data-ng-model="fEventType"
+					    data-ng-options="item.value as item.name for item in eventTypeList">
+	     				</select>
+				    </div>
+				    <span class="text-danger glyphicon glyphicon-asterisk"></span>
+				  </div>
 					<div class="row form-group">
 						<label class="col-md-1 control-label">Dal giorno:</label>
 	        	<div class="col-md-2">

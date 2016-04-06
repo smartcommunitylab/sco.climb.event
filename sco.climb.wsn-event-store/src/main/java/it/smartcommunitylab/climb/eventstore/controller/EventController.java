@@ -135,6 +135,9 @@ public class EventController {
 		if(!Utils.validateAPIRequest(request, dataSetSetup, storage)) {
 			throw new UnauthorizedException("Unauthorized Exception: token not valid");
 		}
+		if(logger.isInfoEnabled()) {
+			logger.info("uploadLog:" + name);
+		}
 		if (!file.isEmpty()) {
 			BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(
 					new File(logUploadDir + "/" + name)));

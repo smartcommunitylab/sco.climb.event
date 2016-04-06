@@ -78,7 +78,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
  			 'value' : 201
  		 },
 		 {
-			 'name' : 'STOP_REACHED',
+			 'name' : 'STOP_LEAVED',
 			 'value' : 202
 		 },
 		 {
@@ -295,7 +295,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 			result = "ANCHOR_IN_RANGE";
 			break;
 		case 202:
-			result = "STOP_REACHED";
+			result = "STOP_LEAVED";
 			break;
 		case 301:
 			result = "SET_DRIVER";

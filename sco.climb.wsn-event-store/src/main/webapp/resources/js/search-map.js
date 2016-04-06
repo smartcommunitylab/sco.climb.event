@@ -32,7 +32,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	$scope.data = null;
 	$scope.status = 200;
 	
-	$scope.fEventType = 303;
+	$scope.fEventType = -1;
 	$scope.fCopyText = "";
 	var today = moment();
 	$scope.fDateFrom = today.format('YYYY-MM-DD');
@@ -48,6 +48,60 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	
 	$scope.initData = function(profile) {
 		$scope.profile = profile;
+		$scope.eventTypeList = [
+ 		 {
+ 			 'name' : 'TUTTI',
+ 			 'value' : -1
+ 		 },
+ 		 {
+ 			 	'name' : 'NODE_IN_RANGE',
+      		'value' : 101
+      	},
+      	{
+      		'name' : 'NODE_CHECKIN',
+      		'value' : 102
+      	},
+      	{
+      		'name' : 'NODE_CHECKOUT',
+      		'value' : 103
+      	},
+      	{
+      		'name' : 'NODE_AT_DESTINATION',
+      		'value' : 104
+      	},
+      	{
+      		'name' : 'NODE_OUT_OF_RANGE',
+      		'value' : 105
+      	},
+  		 {
+  			 'name' : 'ANCHOR_IN_RANGE',
+  			 'value' : 201
+  		 },
+ 		 {
+ 			 'name' : 'STOP_LEAVED',
+ 			 'value' : 202
+ 		 },
+ 		 {
+ 			 'name' : 'SET_DRIVER',
+ 			 'value' : 301
+ 		 },
+ 		 {
+ 			 'name' : 'SET_HELPER',
+ 			 'value' : 302
+ 		 },
+ 		 {
+ 			 'name' : 'DRIVER_POSITION',
+ 			 'value' : 303
+ 		 },
+ 		 {
+ 			 'name' : 'START_ROUTE',
+ 			 'value' : 401
+ 		 },
+ 		 {
+ 			 'name' : 'END_ROUTE',
+ 			 'value' : 402
+ 		 }
+ 		];
 		
 		var urlContext = "report/context/url";
 		$http.get(urlContext).then(
@@ -242,7 +296,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 			result = "ANCHOR_IN_RANGE";
 			break;
 		case 202:
-			result = "STOP_REACHED";
+			result = "STOP_LEAVED";
 			break;
 		case 301:
 			result = "SET_DRIVER";
