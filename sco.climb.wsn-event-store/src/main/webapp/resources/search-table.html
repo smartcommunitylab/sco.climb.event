@@ -67,13 +67,24 @@
 				  </div>
 				  <div class="row form-group">
 				    <label class="col-md-1 control-label">Tipo Evento:</label>
-				    <div class="col-md-2">
+				    <!-- <div class="col-md-2">
 					    <select id="eventType" class="form-control" data-ng-model="fEventType"
 					    data-ng-options="item.value as item.name for item in eventTypeList">
 	     				</select>
-				    </div>
+				    </div>  -->
+				    <div class="col-md-2 checkbox">
+				    	<div data-ng-repeat="item in eventTypeList">
+								<input type="checkbox" data-ng-model="eventTypeSelected[item.value]">
+								{{item.name}}
+							</div>
+						</div>
 				    <span class="text-danger glyphicon glyphicon-asterisk"></span>
 				  </div>
+	
+					<div class="row form-group">
+						<label class="col-md-1 control-label">Tipo Evento:</label>
+					</div>
+				  
 					<div class="row form-group">
 						<label class="col-md-1 control-label">Dal giorno:</label>
 	        	<div class="col-md-2">

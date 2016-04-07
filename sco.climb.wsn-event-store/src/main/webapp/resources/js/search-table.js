@@ -32,7 +32,6 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	$scope.data = null;
 	$scope.status = 200;
 	
-	$scope.fEventType = -1;
 	$scope.fCopyText = "";
 	var today = moment();
 	$scope.fDateFrom = today.format('YYYY-MM-DD');
@@ -40,6 +39,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	$scope.fHourFrom = "07:30:00";
 	$scope.fHourTo = "08:30:00";
 	$scope.eventTypeList = [];
+	$scope.eventTypeSelected = {};
 	$scope.events = null;
 	$scope.routeList = null;
 	$scope.schoolList = null;
@@ -49,10 +49,6 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	$scope.initData = function(profile) {
 		$scope.profile = profile;
 		$scope.eventTypeList = [
-		 {
-			 'name' : 'TUTTI',
-			 'value' : -1
-		 },
 		 {
 			 	'name' : 'NODE_IN_RANGE',
      		'value' : 101
@@ -102,6 +98,11 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 			 'value' : 402
 		 }
 		];
+		
+		for(var i = 0; i < $scope.eventTypeList.length; i++ ) {
+			var item = $scope.eventTypeList[i];
+			$scope.eventTypeSelected[item.value] = false;
+		}
 		
 		var urlContext = "report/context/url";
 		$http.get(urlContext).then(
@@ -228,7 +229,6 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	};
 
 	$scope.resetForm = function() {
-		$sopne.fEventType = -1;
 		$scope.fCopyText = "";
 		$scope.fDateFrom = "";
 		$scope.fDateTo = "";
@@ -255,8 +255,12 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 		+ "?routeId=" + $scope.selectedRoute.objectId
 		+ "&dateFrom=" + dateFrom + "&dateTo=" + dateTo;
 		
-		if($scope.fEventType > 0) {
-			urlSearch = urlSearch + "&eventType[]=" + $scope.fEventType;
+		var events = $scope.getSelectedEventTypes();
+		if(events.length > 0) {
+			for(var i = 0; i < events.length; i++ ) {
+				var item = events[i];
+				urlSearch = urlSearch + "&eventType[]=" + item.value;
+			}
 		}
 		
 		//console.log("urlSearch:" + urlSearch);
@@ -276,6 +280,9 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	$scope.getEventName = function(item) {
 		var result = "";
 		switch (item.eventType) {
+		case -1:
+			result = "TUTTI";
+			break;
 		case 101:
 			result = "NODE_IN_RANGE";
 			break;
@@ -336,6 +343,17 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 		}
 	}
 	
+	$scope.getSelectedEventTypes = function() {
+		var result = [];
+		for(var i = 0; i < $scope.eventTypeList.length; i++ ) {
+			var item = $scope.eventTypeList[i];
+			if($scope.eventTypeSelected[item.value]) {
+				result.push(item);
+			}
+		}
+		return result;
+	}
+	
 	$scope.copyItem = function(item) {
 		return JSON.stringify(item);
 	};
@@ -344,12 +362,14 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	$scope.$watch('selectedRoute',function() {$scope.test();}, true);
 	$scope.$watch('fDateFrom',function() {$scope.test();}, true);
 	$scope.$watch('fDateTo',function() {$scope.test();}, true);
+	$scope.$watch('eventTypeSelected',function() {$scope.test();}, true);
 
 	$scope.test = function() {
 		if(($scope.selectedSchool == null) ||
 		($scope.selectedRoute == null) ||		
 		(!$scope.fDateFrom) || 
-		(!$scope.fDateTo)) {
+		(!$scope.fDateTo) || 
+		($scope.getSelectedEventTypes() == 0)) {
 			$scope.incomplete = true;
 		} else {
 			$scope.incomplete = false;
