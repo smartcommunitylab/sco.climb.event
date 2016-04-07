@@ -464,12 +464,17 @@ searchTableApp.directive('myMap', function() {
       
       $scope.$watch('events', function(newVal, oldVal) {
         if($scope.events) {
+        	for (var i = 0; i < markers.length; i++ ) {
+            markers[i].setMap(null);
+          }
         	markers = [];
         	for (var d = 0, len = $scope.events.length; d < len; d += 1) {
         		var item = $scope.events[d];
         		var latitude = item.payload.latitude;
         		var longitude = item.payload.longitude;
-        		var title = $scope.getEventName(item) + " - " + $scope.getEventTimestamp(item);
+        		var accuracy = item.payload.accuracy;
+        		var title = $scope.getEventName(item) + " - " + $scope.getEventTimestamp(item) 
+        		+ " [" + accuracy + "]";
         		setMarker(map, new google.maps.LatLng(latitude, longitude), title, title);
         	}
         }
