@@ -139,6 +139,9 @@ public class EventController {
 			logger.info("uploadLog:" + name);
 		}
 		if (!file.isEmpty()) {
+			if(logger.isInfoEnabled()) {
+				logger.info("upload stream:" + file);
+			}
 			BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(
 					new File(logUploadDir + "/" + name)));
 			FileCopyUtils.copy(file.getInputStream(), stream);
