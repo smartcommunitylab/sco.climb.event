@@ -331,7 +331,7 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 	
 	$scope.getEventTimestamp = function(item) {
 		var day = moment(item.timestamp);
-		var result = day.format('DD/MM/YYYY, hh:mm:ss'); 
+		var result = day.format('DD/MM/YYYY, HH:mm:ss'); 
 		return result;
 	};
 	
