@@ -16,4 +16,5 @@ public class Const {
 	public static final int DRIVER_POSITION = 303;
 	public static final int START_ROUTE = 401;
 	public static final int END_ROUTE = 402;
+	public static final int BATTERY_STATE = 501;
 }

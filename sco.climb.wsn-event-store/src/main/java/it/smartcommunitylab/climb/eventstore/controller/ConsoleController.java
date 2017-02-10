@@ -88,6 +88,11 @@ public class ConsoleController {
 		return "search-map";
 	}
 	
+	@RequestMapping(value = "/check-nodes")
+	public String checkNodes() {
+		return "check-nodes";
+	}
+	
 	private String getOwnerId() {
 		DataSetDetails details = (DataSetDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String name = details.getUsername();

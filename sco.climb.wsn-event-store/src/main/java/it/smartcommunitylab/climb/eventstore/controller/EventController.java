@@ -19,6 +19,7 @@ package it.smartcommunitylab.climb.eventstore.controller;
 import it.smartcommunitylab.climb.eventstore.common.Utils;
 import it.smartcommunitylab.climb.eventstore.exception.InvalidParametersException;
 import it.smartcommunitylab.climb.eventstore.exception.UnauthorizedException;
+import it.smartcommunitylab.climb.eventstore.model.NodeState;
 import it.smartcommunitylab.climb.eventstore.model.WsnEvent;
 import it.smartcommunitylab.climb.eventstore.storage.DataSetSetup;
 import it.smartcommunitylab.climb.eventstore.storage.RepositoryManager;
@@ -148,6 +149,26 @@ public class EventController {
 			stream.close();
 		}
 		return "{\"status\":\"OK\"}";
+	}
+	
+	@RequestMapping(value = "/api/check/{ownerId}", method = RequestMethod.GET)
+	public @ResponseBody List<NodeState> checkNodes(@PathVariable String ownerId, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String routeId = request.getParameter("routeId");
+		String dateFromString = request.getParameter("dateFrom");
+		String dateToString = request.getParameter("dateTo");
+		List<NodeState> result = Lists.newArrayList();
+ 		try {
+			Date dateFrom = sdf.parse(dateFromString);
+			Date dateTo = sdf.parse(dateToString);
+			result = storage.checkNodes(ownerId, routeId, dateFrom, dateTo);
+			if(logger.isInfoEnabled()) {
+				logger.info(String.format("checkNodes[%s]:%d", ownerId, result.size()));
+			}			
+		} catch (Exception e) {
+			throw new InvalidParametersException("Invalid query parameters:" + e.getMessage());
+		}
+ 		return result;
 	}
 
 	@ExceptionHandler(Exception.class)
