@@ -134,16 +134,17 @@
 				<span>{{item.wsnNodeId}}</span>
 			</div>
 			<div class="col-md-2">
-				<button data-ng-if="item.battery=='1'" class="btn btn-danger">
+				<button data-ng-if="item.batteryLevel==1" class="btn btn-danger">
 					<span class="glyphicon glyphicon-signal"></span>
 				</button>
-				<button data-ng-if="item.battery=='2'" class="btn btn-warning">
+				<button data-ng-if="item.batteryLevel==2" class="btn btn-warning">
 					<span class="glyphicon glyphicon-signal"></span>
 				</button>
-				<button data-ng-if="item.battery=='3'" class="btn btn-success">
+				<button data-ng-if="item.batteryLevel==3" class="btn btn-success">
 					<span class="glyphicon glyphicon-signal"></span>
 				</button>
-				<span data-ng-if="item.battery=='NP'">NP</span>
+				<small data-ng-if="item.batteryLevel!=0">({{item.batteryVoltage}} mV)</small>
+				<small data-ng-if="item.batteryLevel==0">NP</small>
 			</div>
 			<div class="col-md-2">
 				<button class="btn btn-primary" data-ngclipboard data-clipboard-text="{{copyItem(item)}}" title="Copia">

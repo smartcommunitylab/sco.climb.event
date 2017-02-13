@@ -3,7 +3,8 @@ package it.smartcommunitylab.climb.eventstore.model;
 public class NodeState {
 	private String passengerId;
 	private String wsnNodeId;
-	private String battery;
+	private Integer batteryLevel;
+	private Integer batteryVoltage;
 	private boolean manualCheckIn;
 	
 	public String getPassengerId() {
@@ -18,16 +19,22 @@ public class NodeState {
 	public void setWsnNodeId(String wsnNodeId) {
 		this.wsnNodeId = wsnNodeId;
 	}
-	public String getBattery() {
-		return battery;
-	}
-	public void setBattery(String battery) {
-		this.battery = battery;
-	}
 	public boolean isManualCheckIn() {
 		return manualCheckIn;
 	}
 	public void setManualCheckIn(boolean manualCheckIn) {
 		this.manualCheckIn = manualCheckIn;
+	}
+	public Integer getBatteryLevel() {
+		return batteryLevel;
+	}
+	public void setBatteryLevel(Integer batteryLevel) {
+		this.batteryLevel = batteryLevel;
+	}
+	public Integer getBatteryVoltage() {
+		return batteryVoltage;
+	}
+	public void setBatteryVoltage(Integer batteryVoltage) {
+		this.batteryVoltage = batteryVoltage;
 	}
 }

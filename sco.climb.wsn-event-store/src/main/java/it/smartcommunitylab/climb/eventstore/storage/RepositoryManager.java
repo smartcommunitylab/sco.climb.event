@@ -185,9 +185,11 @@ public class RepositoryManager {
 			nodeState.setPassengerId(passengerId);
 			WsnEvent event = batteryLowMap.get(passengerId);
 			if(event != null) {
-				nodeState.setBattery((String) event.getPayload().get("batteryLevel"));
+				nodeState.setBatteryLevel((Integer) event.getPayload().get("batteryLevel"));
+				nodeState.setBatteryVoltage((Integer) event.getPayload().get("batteryVoltage"));
 			} else {
-				nodeState.setBattery("NP");
+				nodeState.setBatteryLevel(0);
+				nodeState.setBatteryVoltage(0);
 			}
 			event = nodeInRangeMap.get(passengerId);
 			if(event != null) {
