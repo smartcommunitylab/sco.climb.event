@@ -163,25 +163,13 @@ var searchTableCtrl = searchTableApp.controller('userCtrl', function($scope, $ht
 		var q = $scope.search.toLowerCase();
 		var text;
 		
-		text = $scope.getEventName(item).toLowerCase();
-		if(text.indexOf(q) != -1) {
-			return true;
-		}
-		
-		text = $scope.getEventTimestamp(item);
+		text = $scope.getChildName(item).toLowerCase();
 		if(text.indexOf(q) != -1) {
 			return true;
 		}
 		
 		if(item.wsnNodeId) {
 			text = item.wsnNodeId.toLowerCase();
-			if(text.indexOf(q) != -1) {
-				return true;
-			}
-		}
-		
-		if(item.payload) {
-			text = JSON.stringify(item.payload);
 			if(text.indexOf(q) != -1) {
 				return true;
 			}

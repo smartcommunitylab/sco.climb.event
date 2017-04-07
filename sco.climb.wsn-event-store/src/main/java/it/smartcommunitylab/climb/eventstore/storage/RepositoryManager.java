@@ -166,6 +166,9 @@ public class RepositoryManager {
 		List<String> passengerList = new ArrayList<String>();
 		List<NodeState> nodeStateList = new ArrayList<NodeState>();
 		for(WsnEvent event : events) {
+			if(!event.getRouteId().equals(routeId)) {
+				continue;
+			}
 			String passengerId = (String) event.getPayload().get("passengerId");
 			if(event.getEventType() == Const.NODE_IN_RANGE) {
 				nodeInRangeMap.put(passengerId, event);
@@ -181,30 +184,27 @@ public class RepositoryManager {
 			}
 		}
 		for(String passengerId : passengerList) {
-			NodeState nodeState = new NodeState();
-			nodeState.setPassengerId(passengerId);
-			WsnEvent event = batteryLowMap.get(passengerId);
-			if(event != null) {
-				nodeState.setBatteryLevel((Integer) event.getPayload().get("batteryLevel"));
-				nodeState.setBatteryVoltage((Integer) event.getPayload().get("batteryVoltage"));
-			} else {
-				nodeState.setBatteryLevel(0);
-				nodeState.setBatteryVoltage(0);
-			}
-			event = nodeInRangeMap.get(passengerId);
-			if(event != null) {
-				nodeState.setWsnNodeId(event.getWsnNodeId());
-				if(nodeAtDestinationMap.get(passengerId) != null) {
-					nodeState.setManualCheckIn(false);
+			WsnEvent eventAtDestination = nodeAtDestinationMap.get(passengerId);
+			if(eventAtDestination != null) {
+				NodeState nodeState = new NodeState();
+				nodeState.setPassengerId(passengerId);
+				nodeState.setWsnNodeId(eventAtDestination.getWsnNodeId());
+				WsnEvent eventBatteryLow = batteryLowMap.get(passengerId);
+				if(eventBatteryLow != null) {
+					nodeState.setBatteryLevel((Integer) eventBatteryLow.getPayload().get("batteryLevel"));
+					nodeState.setBatteryVoltage((Integer) eventBatteryLow.getPayload().get("batteryVoltage"));
+				} else {
+					nodeState.setBatteryLevel(0);
+					nodeState.setBatteryVoltage(0);
 				}
-			} else {
-				if(nodeAtDestinationMap.get(passengerId) != null) {
-					event = nodeAtDestinationMap.get(passengerId);
-					nodeState.setWsnNodeId(event.getWsnNodeId());
+				WsnEvent eventInRange = nodeInRangeMap.get(passengerId);
+				if(eventInRange != null) {
+					nodeState.setManualCheckIn(false);
+				} else {
 					nodeState.setManualCheckIn(true);
 				}
+				nodeStateList.add(nodeState);
 			}
-			nodeStateList.add(nodeState);
 		}
 		if(logger.isDebugEnabled()) {
 			logger.debug("checkNodes:" + nodeStateList.size());
