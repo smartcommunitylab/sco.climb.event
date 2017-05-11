@@ -118,7 +118,7 @@
 			<div class="col-md-2"><h4>Batteria</h4></div>
 			<div class="col-md-2"><h4></h4></div>
 		</div>
-		<div class="row list-row" data-ng-repeat="item in events | filter:doSearch">
+		<div class="row list-row" data-ng-repeat="item in events | filter:doSearch | orderBy:'wsnNodeId'">
 			<div class="col-md-4">
 				<span>{{getChildName(item)}}</span>
 			</div>
